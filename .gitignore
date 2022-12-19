@@ -92,6 +92,13 @@ ipch/
 # TFS 2012 Local Workspace
 $tf/
 
+#Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.backup
+
 # Guidance Automation Toolkit
 *.gpState
 
