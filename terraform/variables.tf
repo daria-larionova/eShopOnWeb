@@ -1,12 +1,3 @@
-variable "topic" {
-  type        = string
-  description = "The topic of the task from training in kebab-case, for example - app-services"
-  validation {
-    condition     = can(regex("^([a-z]*)(-[a-z]+)*$", var.topic))
-    error_message = "Error: Topic must be in kebab-case, for example: app-services."
-  }
-}
-
 variable "prefix" {
   type        = string
   description = "The prefix used for all resources"
@@ -38,24 +29,24 @@ variable "os_type" {
     region = string
     sku_code = string
     has_deployment_slot = bool
+    enable_app_insights = bool
   }))
   default = [
-    { name = "public-api", region = "eastus", sku_code = "S1", has_deployment_slot = false },
-    { name = "web-app-1", region = "eastus", sku_code = "P1v2", has_deployment_slot = true },
-    { name = "web-app-2", region = "westus", sku_code = "P1v2", has_deployment_slot = false }
+    { name = "public-api", region = "eastus", sku_code = "S1", has_deployment_slot = false, enable_app_insights = true }#,
+    #{ name = "web-app-1", region = "eastus", sku_code = "P1v2", has_deployment_slot = true, enable_app_insights = false },
+    #{ name = "web-app-2", region = "westus", sku_code = "P1v2", has_deployment_slot = false, enable_app_insights = false }
   ]
  }
 
-  variable "db_username" {
-    description = "Database administrator username"
-    type        = string
-    sensitive   = true
+  variable "repo_url" {
+    description = "Repository url to deploy from."
+    type = string
   }
 
-  variable "db_password" {
-    description = "Database administrator password"
-    type        = string
-    sensitive   = true
+  variable "repo_branch" {
+    description = "Repository branch to deploy from."
+    type = string
+    default = "master"
   }
 
   variable "databases"  {
