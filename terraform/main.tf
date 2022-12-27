@@ -27,15 +27,15 @@ resource "azurerm_service_plan" "web_app_sp" {
 }
 
 #Create app insights
-resource "azurerm_application_insights" "app_insights" {
-  for_each = { for k,v in var.web_apps : k => v if v.enable_app_insights } #Create app insights to specific web apps only
+# resource "azurerm_application_insights" "app_insights" {
+#   for_each = { for k,v in var.web_apps : k => v if v.enable_app_insights } #Create app insights to specific web apps only
 
-  name                = "${each.value.name}-app-insights"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  application_type    = "web"
+#   name                = "${each.value.name}-app-insights"
+#   location            = azurerm_resource_group.main.location
+#   resource_group_name = azurerm_resource_group.main.name
+#   application_type    = "web"
 
-}
+# }
 
 #Web Apps
 resource "azurerm_windows_web_app" "web_app" {
@@ -48,33 +48,36 @@ resource "azurerm_windows_web_app" "web_app" {
 
   site_config {}
   
-  app_settings = each.value.enable_app_insights ? {
+  # app_settings = each.value.enable_app_insights ? {
 
-    #App Insights Settings
-    APPINSIGHTS_INSTRUMENTATIONKEY = "${azurerm_application_insights.app_insights[each.key].instrumentation_key}"
-    APPINSIGHTS_PROFILERFEATURE_VERSION = "disabled"
-    APPINSIGHTS_SNAPSHOTFEATURE_VERSION = "disabled"
-    APPLICATIONINSIGHTS_CONNECTION_STRING = "${azurerm_application_insights.app_insights[each.key].connection_string}"
-    ApplicationInsightsAgent_EXTENSION_VERSION = "~2"
-    DiagnosticServices_EXTENSION_VERSION = "disabled"
-    InstrumentationEngine_EXTENSION_VERSION = "disabled"
-    SnapshotDebugger_EXTENSION_VERSION = "disabled"
-    XDT_MicrosoftApplicationInsights_BaseExtensions = "disabled"
-    XDT_MicrosoftApplicationInsights_PreemptSdk = "disabled"
-    XDT_MicrosoftApplicationInsights_Mode = "default"
-    ###
+  #   #App Insights Settings
+  #   APPINSIGHTS_INSTRUMENTATIONKEY = "${azurerm_application_insights.app_insights[each.key].instrumentation_key}"
+  #   APPINSIGHTS_PROFILERFEATURE_VERSION = "disabled"
+  #   APPINSIGHTS_SNAPSHOTFEATURE_VERSION = "disabled"
+  #   APPLICATIONINSIGHTS_CONNECTION_STRING = "${azurerm_application_insights.app_insights[each.key].connection_string}"
+  #   ApplicationInsightsAgent_EXTENSION_VERSION = "~2"
+  #   DiagnosticServices_EXTENSION_VERSION = "disabled"
+  #   InstrumentationEngine_EXTENSION_VERSION = "disabled"
+  #   SnapshotDebugger_EXTENSION_VERSION = "disabled"
+  #   XDT_MicrosoftApplicationInsights_BaseExtensions = "disabled"
+  #   XDT_MicrosoftApplicationInsights_PreemptSdk = "disabled"
+  #   XDT_MicrosoftApplicationInsights_Mode = "default"
+  #   XDT_MicrosoftApplicationInsights_Java = "1"
+  #   XDT_MicrosoftApplicationInsights_NodeJs = "1"
+  #   XDT_MicrosoftApplicationInsights_PreemptSdk = "disabled"
+  #   ###
 
-  } : {}
+  # } : {}
 }
 
 #Map source control
-resource "azurerm_app_service_source_control" "example" {
-  for_each = {for idx, web_app in var.web_apps: idx => web_app} 
+# resource "azurerm_app_service_source_control" "example" {
+#   for_each = {for idx, web_app in var.web_apps: idx => web_app} 
 
-  app_id   = azurerm_windows_web_app.web_app[each.key].id
-  repo_url = var.repo_url
-  branch   = var.repo_branch
-}
+#   app_id   = azurerm_windows_web_app.web_app[each.key].id
+#   repo_url = var.repo_url
+#   branch   = var.repo_branch
+# }
 
 #Deployment Slots
 resource "azurerm_windows_web_app_slot" "deployment_slot" {

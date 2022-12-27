@@ -83,6 +83,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddMediatR(typeof(CatalogItem).Assembly);
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
@@ -129,6 +130,8 @@ var app = builder.Build();
 app.Logger.LogInformation("PublicApi App created...");
 
 app.Logger.LogInformation("Seeding Database...");
+
+//throw new Exception("Cannot move further");
 
 using (var scope = app.Services.CreateScope())
 {
