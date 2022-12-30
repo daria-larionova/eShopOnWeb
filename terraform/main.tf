@@ -70,21 +70,47 @@ resource "azurerm_windows_web_app" "web_app" {
   # } : {}
 }
 
-#Map source control
-# resource "azurerm_app_service_source_control" "example" {
-#   for_each = {for idx, web_app in var.web_apps: idx => web_app} 
-
-#   app_id   = azurerm_windows_web_app.web_app[each.key].id
-#   repo_url = var.repo_url
-#   branch   = var.repo_branch
-# }
-
 #Deployment Slots
 resource "azurerm_windows_web_app_slot" "deployment_slot" {
   for_each = { for k,v in var.web_apps : k => v if v.has_deployment_slot } #Add deployment to specific web apps only
 
   name           = "stage"
   app_service_id = azurerm_windows_web_app.web_app[each.key].id
+
+  site_config {}
+}
+
+#Warehouse Storage and Functions
+resource "azurerm_storage_account" "storage_account" {
+  name                     = "eshopwhsa"
+  resource_group_name      = azurerm_resource_group.main.name
+  location                 = azurerm_resource_group.main.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_storage_container" "storage_container" {
+  name                  = "warehouse"
+  storage_account_name  = azurerm_storage_account.storage_account.name
+  container_access_type = "private"
+}
+
+resource "azurerm_service_plan" "function_sp" {
+  name                = "${var.app_name}-warehouse-sp"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  os_type             = var.os_type
+  sku_name            = "S1"
+}
+
+resource "azurerm_windows_function_app" "function_app" {
+  name                = "${var.app_name}-warehouse-function-app"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+
+  storage_account_name       = azurerm_storage_account.storage_account.name
+  storage_account_access_key = azurerm_storage_account.storage_account.primary_access_key
+  service_plan_id            = azurerm_service_plan.function_sp.id
 
   site_config {}
 }

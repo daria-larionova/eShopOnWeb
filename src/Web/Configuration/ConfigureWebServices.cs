@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.eShopWeb.ApplicationCore;
 using Microsoft.eShopWeb.Web.Interfaces;
 using Microsoft.eShopWeb.Web.Services;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ public static class ConfigureWebServices
     {
         services.AddMediatR(typeof(BasketViewModelService).Assembly);
         services.AddScoped<IBasketViewModelService, BasketViewModelService>();
+        services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<CatalogViewModelService>();
         services.AddScoped<ICatalogItemViewModelService, CatalogItemViewModelService>();
         services.Configure<CatalogSettings>(configuration);
