@@ -27,13 +27,33 @@ variable "os_type" {
   type = list(object({
     name = string
     region = string
+    traffic_manager_endpoint_name = string
+    traffic_manager_geo_mapping = string
     sku_code = string
     has_deployment_slot = bool
     enable_app_insights = bool
   }))
   default = [
-    { name = "public-api", region = "eastus", sku_code = "S1", has_deployment_slot = false, enable_app_insights = false },
-    { name = "web-app-1", region = "eastus", sku_code = "P1v2", has_deployment_slot = false, enable_app_insights = false }#,
-    #{ name = "web-app-2", region = "westus", sku_code = "P1v2", has_deployment_slot = true, enable_app_insights = false }
+    #{ name = "public-api", region = "eastus", sku_code = "S1", has_deployment_slot = false, enable_app_insights = false },
+    { name = "web-app-1", region = "eastus", traffic_manager_endpoint_name="Europe", traffic_manager_geo_mapping="GEO-EU", sku_code = "P1v2", has_deployment_slot = false, enable_app_insights = false },
+    { name = "web-app-2", region = "westus", traffic_manager_endpoint_name="Others", traffic_manager_geo_mapping="WORLD", sku_code = "P1v2", has_deployment_slot = true, enable_app_insights = false }
   ]
  }
+
+ variable "databases"  {
+    description = "List of databases to create in SQL Server."
+    type = list(string)
+    default = ["CatalogDb", "Identity"]
+  }
+
+  variable "db_username"  {
+    type = string
+  }
+
+  variable "db_password"  {
+    type = string
+  }
+
+  variable "logic_app_endpoint"  {
+    type = string
+  }

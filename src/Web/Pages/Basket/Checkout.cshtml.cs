@@ -61,6 +61,7 @@ public class CheckoutModel : PageModel
             if (order != null)
             {
                 await _warehouseService.ReserveItems(order);
+                await _warehouseService.DeliveryOrder(order);
             }
             await _basketService.DeleteBasketAsync(BasketModel.Id);
         }

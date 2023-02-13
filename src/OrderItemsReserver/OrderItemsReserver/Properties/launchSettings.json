@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "Warehouse": {
+    "OrderItemsReserver": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7121",
+      "commandLineArgs": "--port 7084",
       "launchBrowser": false
     }
   }
